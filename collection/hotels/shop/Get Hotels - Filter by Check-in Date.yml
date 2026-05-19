@@ -1,0 +1,46 @@
+info:
+  name: Get Hotels - Filter by Check-in Date
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?check_in=2026-03-30"
+  params:
+    - name: check_in
+      value: 2026-03-30
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Filter by Check-in Date
+  
+  Retrieves hotels with a specific check-in date.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `check_in` | string | **Required.** Check-in date in `yyyy-mm-dd` format |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - The check-in filter matches the exact date of `stay.checkInDate`
+  - Hotels are available for dates within 90 days from 2026-01-20
+  - Stay duration ranges from 1-7 nights
+  
+  ## Response
+  
+  Returns an array of hotels with the specified check-in date. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels?check_in=2026-03-30`

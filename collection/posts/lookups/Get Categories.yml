@@ -1,0 +1,59 @@
+info:
+  name: Get Categories
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/lookups/categories"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body
+      operator: isArray
+      value: ""
+    - expression: res.body.length
+      operator: gte
+      value: "1"
+  scripts:
+    - type: tests
+      code: |
+        test("categories list is non-empty", function() {
+          const body = res.getBody();
+          expect(Array.isArray(body)).to.equal(true);
+          expect(body.length).to.be.greaterThan(0);
+        });
+        test("each category is a non-empty string", function() {
+          const body = res.getBody();
+          body.forEach(function(category) {
+            expect(typeof category).to.equal("string");
+            expect(category.length).to.be.greaterThan(0);
+          });
+        });
+
+docs: |
+  # Get Categories
+  
+  Retrieves the list of post categories.
+  
+  ## Response
+  
+  Returns an array of category names (strings).
+  
+  ### Available Categories (15 total)
+  
+  Programming, Technology, Web Development, DevOps, Design, Mobile Development, Data Science, AI/ML, Security, Cloud Computing, Database, Frontend, Backend, Full Stack, Testing
+  
+  ## Example
+  
+  `GET /posts/lookups/categories`

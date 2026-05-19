@@ -1,0 +1,32 @@
+info:
+  name: Get Artists
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs/lookups/artists"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Artists
+  
+  Retrieves the list of available artists.
+  
+  ## Response
+  
+  Returns an array of artist names (strings).
+  
+  ### Available Artists (20 total)
+  
+  Taylor Swift, The Weeknd, Billie Eilish, Drake, Ariana Grande, Ed Sheeran, Post Malone, Dua Lipa, The Beatles, Queen, Michael Jackson, Elvis Presley, Madonna, Prince, David Bowie, Bob Dylan, Led Zeppelin, Pink Floyd, The Rolling Stones, Nirvana
+  
+  ## Example
+  
+  `GET /songs/lookups/artists`

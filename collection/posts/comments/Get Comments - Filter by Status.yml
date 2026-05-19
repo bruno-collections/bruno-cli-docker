@@ -1,0 +1,69 @@
+info:
+  name: Get Comments - Filter by Status
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/comments?status=approved"
+  params:
+    - name: status
+      value: approved
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body
+      operator: isArray
+      value: ""
+  scripts:
+    - type: tests
+      code: |
+        test("every returned comment has status 'approved'", function() {
+          const body = res.getBody();
+          expect(Array.isArray(body)).to.equal(true);
+          body.forEach(function(comment) {
+            expect(comment.status).to.equal("approved");
+          });
+        });
+        test("response time is under 5 seconds", function() {
+          expect(res.getResponseTime()).to.be.below(5000);
+        });
+
+docs: |
+  # Get Comments - Filter by Status
+  
+  Retrieves comments filtered by moderation status.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `status` | string | **Required.** Comment status (`approved`, `pending`, `spam`, or `deleted`) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Statuses
+  
+  - `approved` - Approved comment
+  - `pending` - Pending moderation
+  - `spam` - Marked as spam
+  - `deleted` - Deleted comment
+  
+  ## Response
+  
+  Returns an array of comments with the specified status. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /posts/comments?status=approved`

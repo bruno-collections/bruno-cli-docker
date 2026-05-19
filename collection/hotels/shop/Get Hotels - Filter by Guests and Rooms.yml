@@ -1,0 +1,50 @@
+info:
+  name: Get Hotels - Filter by Guests and Rooms
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?guests=2&rooms=1"
+  params:
+    - name: guests
+      value: "2"
+      type: query
+    - name: rooms
+      value: "1"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Filter by Guests and Rooms
+  
+  Retrieves hotels that can accommodate the specified number of guests and rooms.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `guests` | integer | Minimum number of guests (1-4) |
+  | `rooms` | integer | Minimum number of rooms (1-3) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - `guests`: Returns hotels with `room.guests >= guests`
+  - `rooms`: Returns hotels with `room.rooms >= rooms`
+  - Both filters use "greater than or equal" logic
+  
+  ## Response
+  
+  Returns an array of hotels that can accommodate the specified capacity. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels?guests=2&rooms=1`

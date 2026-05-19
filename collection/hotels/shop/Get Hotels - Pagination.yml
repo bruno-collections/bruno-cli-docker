@@ -1,0 +1,45 @@
+info:
+  name: Get Hotels - Pagination
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?page=2&per_page=25"
+  params:
+    - name: page
+      value: "2"
+      type: query
+    - name: per_page
+      value: "25"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Pagination
+  
+  Demonstrates pagination controls for navigating through hotel results.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number, 1-indexed (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Pagination Behavior
+  
+  - Page numbers start at 1
+  - Maximum 50 items per page
+  - Offset calculated as: `(page - 1) * per_page`
+  - The `x-total-count` response header contains the total number of matching hotels
+  
+  ## Example
+  
+  `GET /hotels?page=2&per_page=25` - Returns items 26-50

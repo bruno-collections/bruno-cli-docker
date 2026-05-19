@@ -1,0 +1,36 @@
+info:
+  name: Get Invoice Statuses
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/lookups/invoiceStatuses"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Invoice Statuses
+  
+  Retrieves the list of invoice statuses.
+  
+  ## Response
+  
+  Returns an array of status names (strings).
+  
+  ### Available Invoice Statuses (5 total)
+  
+  - `draft` - Draft invoice
+  - `open` - Open/unpaid invoice
+  - `paid` - Paid invoice
+  - `void` - Voided invoice
+  - `uncollectible` - Uncollectible invoice
+  
+  ## Example
+  
+  `GET /billing/lookups/invoiceStatuses`

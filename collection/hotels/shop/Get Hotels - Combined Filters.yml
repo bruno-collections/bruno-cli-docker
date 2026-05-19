@@ -1,0 +1,68 @@
+info:
+  name: Get Hotels - Combined Filters
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?city=NYC&check_in=2026-01-25&check_out=2026-01-28&guests=2&rooms=1&page=1&per_page=20"
+  params:
+    - name: city
+      value: NYC
+      type: query
+    - name: check_in
+      value: 2026-01-25
+      type: query
+    - name: check_out
+      value: 2026-01-28
+      type: query
+    - name: guests
+      value: "2"
+      type: query
+    - name: rooms
+      value: "1"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Combined Filters
+  
+  Retrieves hotels using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `city` | string | Filter by city code |
+  | `check_in` | string | Filter by check-in date (`yyyy-mm-dd`) |
+  | `check_out` | string | Filter by check-out date (`yyyy-mm-dd`) |
+  | `guests` | integer | Filter by minimum number of guests |
+  | `rooms` | integer | Filter by minimum number of rooms |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - City codes are case-insensitive
+  - Guest/room filters use "greater than or equal" logic
+  
+  ## Response
+  
+  Returns an array of hotels matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels?city=NYC&check_in=2026-01-25&check_out=2026-01-28&guests=2&rooms=1&page=1&per_page=20`

@@ -1,0 +1,32 @@
+info:
+  name: Get Record Labels
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs/lookups/recordLabels"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Record Labels
+  
+  Retrieves the list of record labels.
+  
+  ## Response
+  
+  Returns an array of record label names (strings).
+  
+  ### Available Record Labels (12 total)
+  
+  Universal Music, Sony Music, Warner Music, EMI Records, Atlantic Records, RCA Records, Columbia Records, Interscope Records, Republic Records, Capitol Records, Island Records, Def Jam Recordings
+  
+  ## Example
+  
+  `GET /songs/lookups/recordLabels`

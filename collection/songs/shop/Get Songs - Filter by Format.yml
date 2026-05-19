@@ -1,0 +1,48 @@
+info:
+  name: Get Songs - Filter by Format
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs?format=Digital"
+  params:
+    - name: format
+      value: Digital
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Songs - Filter by Format
+  
+  Retrieves songs filtered by format.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `format` | string | **Required.** Format name (case-insensitive) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Formats (5 total)
+  
+  - `Digital` - Digital download
+  - `CD` - Compact disc
+  - `Vinyl` - Vinyl record
+  - `Cassette` - Cassette tape
+  - `Streaming` - Streaming format
+  
+  ## Response
+  
+  Returns an array of songs in the specified format. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /songs?format=Digital`

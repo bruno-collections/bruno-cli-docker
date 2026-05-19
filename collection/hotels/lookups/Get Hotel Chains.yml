@@ -1,0 +1,32 @@
+info:
+  name: Get Hotel Chains
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels/lookups/hotelChains"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotel Chains
+  
+  Retrieves the list of hotel chains.
+  
+  ## Response
+  
+  Returns an array of hotel chain names (strings).
+  
+  ### Available Hotel Chains (15 total)
+  
+  Marriott, Hilton, Hyatt, InterContinental, Sheraton, Holiday Inn, Best Western, Radisson, Wyndham, DoubleTree, Westin, Renaissance, Courtyard, Residence Inn, Embassy Suites
+  
+  ## Example
+  
+  `GET /hotels/lookups/hotelChains`

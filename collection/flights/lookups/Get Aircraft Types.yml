@@ -1,0 +1,39 @@
+info:
+  name: Get Aircraft Types
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/lookups/aircraftTypes"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Aircraft Types
+  
+  Retrieves the list of all supported aircraft types.
+  
+  ## Response
+  
+  Returns an array of aircraft type names (strings).
+  
+  ### Available Aircraft Types (8 total)
+  
+  - Airbus A320
+  - Boeing 737
+  - Airbus A321
+  - Boeing 787
+  - Airbus A319
+  - Boeing 777
+  - Embraer E175
+  - Bombardier CRJ900
+  
+  ## Example
+  
+  `GET /flights/lookups/aircraftTypes`

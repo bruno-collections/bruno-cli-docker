@@ -1,0 +1,44 @@
+info:
+  name: Get Orders - Filter by Origin
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/orders?origin=SFB"
+  params:
+    - name: origin
+      value: SFB
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Orders - Filter by Origin
+  
+  Retrieves flight orders filtered by origin airport.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `origin` | string | **Required.** Origin airport code (e.g., SFB, JFK, LAX) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Airport Codes
+  
+  SFB (Orlando), LAS (Las Vegas), LAX (Los Angeles), JFK (New York), ORD (Chicago), DFW (Dallas), DEN (Denver), ATL (Atlanta), SEA (Seattle), MIA (Miami), PHX (Phoenix), IAH (Houston), BOS (Boston), SFO (San Francisco), MSP (Minneapolis), DTW (Detroit), PHL (Philadelphia), CLT (Charlotte), LGA (New York), BWI (Baltimore)
+  
+  ## Response
+  
+  Returns an array of orders for flights departing from the specified airport. The `x-total-count` header shows total matching orders.
+  
+  ## Example
+  
+  `GET /flights/orders?origin=SFB`

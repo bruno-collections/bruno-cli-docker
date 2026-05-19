@@ -1,0 +1,34 @@
+info:
+  name: Get Customer Statuses
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/lookups/customerStatuses"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Customer Statuses
+  
+  Retrieves the list of customer statuses.
+  
+  ## Response
+  
+  Returns an array of status names (strings).
+  
+  ### Available Customer Statuses (3 total)
+  
+  - `active` - Active customer
+  - `inactive` - Inactive customer
+  - `deleted` - Deleted customer
+  
+  ## Example
+  
+  `GET /billing/lookups/customerStatuses`

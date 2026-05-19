@@ -1,0 +1,32 @@
+info:
+  name: Get Amenities
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels/lookups/amenities"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Amenities
+  
+  Retrieves the list of hotel amenities.
+  
+  ## Response
+  
+  Returns an array of amenity names (strings).
+  
+  ### Available Amenities (15 total)
+  
+  WiFi, Pool, Gym, Spa, Restaurant, Bar, Room Service, Parking, Airport Shuttle, Business Center, Concierge, Laundry Service, Pet Friendly, Beach Access, Golf Course
+  
+  ## Example
+  
+  `GET /hotels/lookups/amenities`

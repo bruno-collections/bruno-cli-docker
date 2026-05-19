@@ -1,0 +1,36 @@
+info:
+  name: Get Payment Methods
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/lookups/paymentMethods"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Payment Methods
+  
+  Retrieves the list of supported payment methods.
+  
+  ## Response
+  
+  Returns an array of payment method names (strings).
+  
+  ### Available Payment Methods (5 total)
+  
+  - `card` - Credit/debit card
+  - `bank_transfer` - Bank transfer
+  - `paypal` - PayPal
+  - `apple_pay` - Apple Pay
+  - `google_pay` - Google Pay
+  
+  ## Example
+  
+  `GET /billing/lookups/paymentMethods`

@@ -1,0 +1,32 @@
+info:
+  name: Get Tags
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/lookups/tags"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Tags
+  
+  Retrieves the list of post tags.
+  
+  ## Response
+  
+  Returns an array of tag names (strings).
+  
+  ### Available Tags (43 total)
+  
+  javascript, nodejs, python, react, vue, angular, typescript, java, go, rust, php, ruby, swift, kotlin, docker, kubernetes, aws, azure, gcp, mongodb, postgresql, mysql, redis, graphql, rest, api, microservices, serverless, ci-cd, git, linux, bash, html, css, sass, webpack, testing, jest, cypress, agile, scrum, tutorial, guide
+  
+  ## Example
+  
+  `GET /posts/lookups/tags`

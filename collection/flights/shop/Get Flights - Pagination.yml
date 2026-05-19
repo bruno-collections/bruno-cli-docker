@@ -1,0 +1,57 @@
+info:
+  name: Get Flights - Pagination
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights?page=2&per_page=25"
+  params:
+    - name: page
+      value: "2"
+      type: query
+    - name: per_page
+      value: "25"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Flights - Pagination
+  
+  Demonstrates pagination controls for navigating through flight results.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number, 1-indexed (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Pagination Behavior
+  
+  - Page numbers start at 1
+  - Maximum 50 items per page
+  - Offset calculated as: `(page - 1) * per_page`
+  - The `x-total-count` response header contains the total number of matching flights
+  
+  ## Response Headers
+  
+  | Header | Description |
+  |--------|-------------|
+  | `x-total-count` | Total number of flights (useful for calculating total pages) |
+  
+  ## Calculating Total Pages
+  
+  ```
+  totalPages = Math.ceil(x-total-count / per_page)
+  ```
+  
+  ## Example
+  
+  `GET /flights?page=2&per_page=25` - Returns items 26-50

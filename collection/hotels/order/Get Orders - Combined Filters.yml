@@ -1,0 +1,61 @@
+info:
+  name: Get Orders - Combined Filters
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels/orders?city=NYC&check_in=2026-01-25&check_out=2026-01-28&page=1&per_page=20"
+  params:
+    - name: city
+      value: NYC
+      type: query
+    - name: check_in
+      value: 2026-01-25
+      type: query
+    - name: check_out
+      value: 2026-01-28
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Orders - Combined Filters
+  
+  Retrieves hotel orders using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `city` | string | Filter by city code |
+  | `check_in` | string | Filter by check-in date (`yyyy-mm-dd`) |
+  | `check_out` | string | Filter by check-out date (`yyyy-mm-dd`) |
+  | `order_number` | string | Filter by specific order number |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - City codes are case-insensitive
+  - Date filters match exact dates
+  
+  ## Response
+  
+  Returns an array of orders matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels/orders?city=NYC&check_in=2026-01-25&check_out=2026-01-28&page=1&per_page=20`

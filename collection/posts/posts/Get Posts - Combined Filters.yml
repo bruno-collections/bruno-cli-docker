@@ -1,0 +1,68 @@
+info:
+  name: Get Posts - Combined Filters
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts?category=Programming&tag=javascript&status=published&min_views=1000&page=1&per_page=20"
+  params:
+    - name: category
+      value: Programming
+      type: query
+    - name: tag
+      value: javascript
+      type: query
+    - name: status
+      value: published
+      type: query
+    - name: min_views
+      value: "1000"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Posts - Combined Filters
+  
+  Retrieves posts using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `author` | string | Filter by author ID |
+  | `category` | string | Filter by category |
+  | `tag` | string | Filter by tag |
+  | `status` | string | Filter by post status |
+  | `published_at[gte]` | string | Filter by published date (greater than or equal, ISO 8601) |
+  | `published_at[lte]` | string | Filter by published date (less than or equal, ISO 8601) |
+  | `min_views` | integer | Minimum number of views |
+  | `search` | string | Search in title and content |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Category, tag, and status matching is case-insensitive
+  - `min_views` filters posts with `views >= min_views`
+  
+  ## Response
+  
+  Returns an array of posts matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /posts?category=Programming&tag=javascript&status=published&min_views=1000&page=1&per_page=20`

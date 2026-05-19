@@ -1,0 +1,46 @@
+info:
+  name: All Flights
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights?page=1"
+  params:
+    - name: page
+      value: "1"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # All Flights
+  
+  Retrieves all available flights with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of flight objects. The `x-total-count` response header contains the total number of flights.
+  
+  ### Flight Object Structure
+  
+  Each flight contains:
+  - `journey`: Route details (origin, destination, times, duration, stops, aircraft, operator)
+  - `pricing`: Fare breakdown (baseFare, taxesAndFees, totalFare, fareType, currency)
+  - `optionalServices`: Add-on pricing (carry-on, checked bags, seat selection, priority boarding)
+  
+  ## Example
+  
+  `GET /flights?page=1`

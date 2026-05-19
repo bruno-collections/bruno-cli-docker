@@ -1,0 +1,37 @@
+info:
+  name: Get Fare Types
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/lookups/fareTypes"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Fare Types
+  
+  Retrieves the list of all supported fare types.
+  
+  ## Response
+  
+  Returns an array of fare type names (strings).
+  
+  ### Available Fare Types (4 total)
+  
+  | Fare Type | Description |
+  |-----------|-------------|
+  | Basic | Economy fare with limited flexibility |
+  | Standard | Regular fare with standard amenities |
+  | Flex | Flexible fare with change/cancel options |
+  | Premium | Premium fare with enhanced services |
+  
+  ## Example
+  
+  `GET /flights/lookups/fareTypes`

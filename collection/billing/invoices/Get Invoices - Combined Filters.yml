@@ -1,0 +1,66 @@
+info:
+  name: Get Invoices - Combined Filters
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/invoices?customer=cus_ABC123&status=open&due_date[gte]=2024-01-01&page=1&per_page=20"
+  params:
+    - name: customer
+      value: cus_ABC123
+      type: query
+    - name: status
+      value: open
+      type: query
+    - name: due_date[gte]
+      value: 2024-01-01
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Invoices - Combined Filters
+  
+  Retrieves invoices using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `customer` | string | Filter by customer ID |
+  | `subscription` | string | Filter by subscription ID |
+  | `status` | string | Filter by invoice status |
+  | `due_date[gte]` | string | Filter by due date (greater than or equal, `yyyy-mm-dd`) |
+  | `due_date[lte]` | string | Filter by due date (less than or equal, `yyyy-mm-dd`) |
+  | `created[gte]` | string | Filter by creation date (greater than or equal, ISO 8601) |
+  | `created[lte]` | string | Filter by creation date (less than or equal, ISO 8601) |
+  | `min_amount_due` | integer | Minimum amount due (in cents) |
+  | `max_amount_due` | integer | Maximum amount due (in cents) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Status matching is case-insensitive
+  - Amount filters compare against `amount_due` field (in cents)
+  
+  ## Response
+  
+  Returns an array of invoices matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/invoices?customer=cus_ABC123&status=open&due_date[gte]=2024-01-01&page=1&per_page=20`

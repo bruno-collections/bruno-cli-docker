@@ -1,0 +1,44 @@
+info:
+  name: Get Posts - Filter by Category
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts?category=Programming"
+  params:
+    - name: category
+      value: Programming
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Posts - Filter by Category
+  
+  Retrieves posts filtered by category.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `category` | string | **Required.** Category name (case-insensitive) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Categories (15 total)
+  
+  Programming, Technology, Web Development, DevOps, Design, Mobile Development, Data Science, AI/ML, Security, Cloud Computing, Database, Frontend, Backend, Full Stack, Testing
+  
+  ## Response
+  
+  Returns an array of posts in the specified category. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /posts?category=Programming`

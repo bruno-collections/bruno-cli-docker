@@ -1,0 +1,40 @@
+info:
+  name: Get Airlines
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/lookups/airlines"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Airlines
+  
+  Retrieves the list of all supported airlines.
+  
+  ## Response
+  
+  Returns an array of airline names (strings).
+  
+  ### Available Airlines (9 total)
+  
+  - Allegiant Air
+  - American Airlines
+  - Delta Air Lines
+  - United Airlines
+  - Southwest Airlines
+  - JetBlue Airways
+  - Alaska Airlines
+  - Spirit Airlines
+  - Frontier Airlines
+  
+  ## Example
+  
+  `GET /flights/lookups/airlines`

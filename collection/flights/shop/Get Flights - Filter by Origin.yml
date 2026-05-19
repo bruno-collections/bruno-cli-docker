@@ -1,0 +1,534 @@
+info:
+  name: Get Flights - Filter by Origin
+  type: http
+  seq: 1
+
+app:
+  code: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Flight Search</title>
+      <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+      <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    </head>
+    <body>
+      <div id="root"></div>
+
+      <script type="text/babel">
+        class FlightsApp extends React.Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              origin: '',
+              flights: [],
+              loading: false,
+              error: null,
+            };
+          }
+
+          handleInputChange = (event) => {
+            this.setState({
+              origin: event.target.value,
+            });
+          }
+
+          handleSearch = () => {
+            const { origin } = this.state;
+
+            // Ensure there is an origin before sending the request
+            if (origin.trim()) {
+              this.setState({ loading: true, error: null });
+              
+              // Check if ctx is available (Bruno environment) or use mock data
+              if (typeof ctx !== 'undefined' && ctx.sendRequest) {
+                ctx.sendRequest({ origin: origin.trim() })
+                  .then(response => {
+                    this.setState({ 
+                      flights: response.data || [], 
+                      loading: false 
+                    });
+                  })
+                  .catch(error => {
+                    this.setState({ 
+                      error: 'Failed to fetch flights. Please try again.', 
+                      loading: false,
+                      flights: []
+                    });
+                  });
+              } else {
+                // Standalone mode - use mock data
+                setTimeout(() => {
+                  const mockFlights = [
+                    {
+                      "journey": {
+                        "origin": {
+                          "airportCode": origin.trim().toUpperCase(),
+                          "city": "Orlando",
+                          "name": "Orlando Sanford Intl"
+                        },
+                        "destination": {
+                          "airportCode": "MSP",
+                          "city": "Minneapolis",
+                          "name": "Minneapolis-St. Paul Intl"
+                        },
+                        "departureTimeLocal": "2026-04-14T11:00",
+                        "arrivalTimeLocal": "2026-04-14T12:13",
+                        "totalDurationMinutes": 73,
+                        "durationMinutes": 73,
+                        "stops": 0,
+                        "aircraft": "Bombardier CRJ900",
+                        "operatedBy": "United Airlines"
+                      },
+                      "pricing": {
+                        "baseFare": 230.2,
+                        "taxesAndFees": 132.85,
+                        "totalFare": 363.05,
+                        "fareType": "Basic",
+                        "currency": "USD"
+                      },
+                      "optionalServices": {
+                        "carryOnBag": {
+                          "price": 30,
+                          "per": "segment"
+                        },
+                        "checkedBag": {
+                          "firstBag": 45,
+                          "secondBag": 45,
+                          "maxWeightLbs": 40
+                        },
+                        "seatSelection": {
+                          "standardSeat": 25,
+                          "legroomSeat": 35
+                        },
+                        "priorityBoarding": {
+                          "price": 20
+                        }
+                      }
+                    },
+                    {
+                      "journey": {
+                        "origin": {
+                          "airportCode": origin.trim().toUpperCase(),
+                          "city": "Orlando",
+                          "name": "Orlando Sanford Intl"
+                        },
+                        "destination": {
+                          "airportCode": "SFO",
+                          "city": "San Francisco",
+                          "name": "San Francisco Intl"
+                        },
+                        "departureTimeLocal": "2026-01-29T20:40",
+                        "arrivalTimeLocal": "2026-01-30T00:18",
+                        "totalDurationMinutes": 218,
+                        "durationMinutes": 218,
+                        "stops": 0,
+                        "aircraft": "Airbus A320",
+                        "operatedBy": "United Airlines"
+                      },
+                      "pricing": {
+                        "baseFare": 232.37,
+                        "taxesAndFees": 89.61,
+                        "totalFare": 321.98,
+                        "fareType": "Flex",
+                        "currency": "USD"
+                      },
+                      "optionalServices": {
+                        "carryOnBag": {
+                          "price": 30,
+                          "per": "segment"
+                        },
+                        "checkedBag": {
+                          "firstBag": 45,
+                          "secondBag": 45,
+                          "maxWeightLbs": 40
+                        },
+                        "seatSelection": {
+                          "standardSeat": 18,
+                          "legroomSeat": 42
+                        },
+                        "priorityBoarding": {
+                          "price": 18
+                        }
+                      }
+                    }
+                  ];
+                  
+                  this.setState({ 
+                    flights: mockFlights, 
+                    loading: false 
+                  });
+                }, 1000);
+              }
+            }
+          }
+
+          handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+              this.handleSearch();
+            }
+          }
+
+          formatTime = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+          }
+
+          formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          }
+
+          render() {
+            const { origin, flights, loading, error } = this.state;
+
+            return (
+              <div style={styles.container}>
+                <div style={styles.inputGroup}>
+                  <input
+                    type="text"
+                    value={origin}
+                    onChange={this.handleInputChange}
+                    onKeyPress={this.handleKeyPress}
+                    placeholder="Origin (e.g., SFB)"
+                    style={styles.input}
+                  />
+                  <button 
+                    onClick={this.handleSearch} 
+                    style={styles.button}
+                    disabled={!origin.trim() || loading}
+                  >
+                    {loading ? '...' : 'Search'}
+                  </button>
+                </div>
+
+                {error && <div style={styles.error}>{error}</div>}
+                {loading && <div style={styles.loading}>Loading...</div>}
+
+                <div style={styles.flightsContainer}>
+                  {flights.map((flight, i) => (
+                    <div key={i} style={styles.flightCard}>
+                      <div style={styles.mainRow}>
+                        <div style={styles.routeSection}>
+                          <div style={styles.route}>
+                            <span style={styles.airportCode}>{flight.journey.origin.airportCode}</span>
+                            <span style={styles.arrow}>→</span>
+                            <span style={styles.airportCode}>{flight.journey.destination.airportCode}</span>
+                          </div>
+                          <div style={styles.cities}>
+                            {flight.journey.origin.city} → {flight.journey.destination.city}
+                          </div>
+                        </div>
+
+                        <div style={styles.timeSection}>
+                          <div style={styles.timeRow}>
+                            <span style={styles.time}>{this.formatTime(flight.journey.departureTimeLocal)}</span>
+                            <span style={styles.duration}>
+                              {Math.floor(flight.journey.totalDurationMinutes / 60)}h {flight.journey.totalDurationMinutes % 60}m
+                            </span>
+                            <span style={styles.time}>{this.formatTime(flight.journey.arrivalTimeLocal)}</span>
+                          </div>
+                          <div style={styles.dateRow}>
+                            <span style={styles.date}>{this.formatDate(flight.journey.departureTimeLocal)}</span>
+                            <span style={styles.stops}>{flight.journey.stops === 0 ? 'Nonstop' : `${flight.journey.stops} stop`}</span>
+                            <span style={styles.date}>{this.formatDate(flight.journey.arrivalTimeLocal)}</span>
+                          </div>
+                        </div>
+
+                        <div style={styles.priceSection}>
+                          <div style={styles.totalFare}>${flight.pricing.totalFare.toFixed(0)}</div>
+                          <div style={styles.fareType}>{flight.pricing.fareType}</div>
+                        </div>
+                      </div>
+
+                      <div style={styles.detailsRow}>
+                        <div style={styles.detailGroup}>
+                          <span style={styles.detailLabel}>Aircraft:</span>
+                          <span style={styles.detailValue}>{flight.journey.aircraft}</span>
+                          <span style={styles.detailSeparator}>•</span>
+                          <span style={styles.detailValue}>{flight.journey.operatedBy}</span>
+                        </div>
+                        <div style={styles.detailGroup}>
+                          <span style={styles.detailLabel}>Fare:</span>
+                          <span style={styles.detailValue}>${flight.pricing.baseFare.toFixed(0)} base</span>
+                          <span style={styles.detailSeparator}>+</span>
+                          <span style={styles.detailValue}>${flight.pricing.taxesAndFees.toFixed(0)} tax</span>
+                        </div>
+                      </div>
+
+                      <div style={styles.servicesRow}>
+                        <span style={styles.serviceTag}>Carry-on: ${flight.optionalServices.carryOnBag.price}</span>
+                        <span style={styles.serviceTag}>Checked: ${flight.optionalServices.checkedBag.firstBag}/${flight.optionalServices.checkedBag.secondBag}</span>
+                        <span style={styles.serviceTag}>Seat: ${flight.optionalServices.seatSelection.standardSeat}-${flight.optionalServices.seatSelection.legroomSeat}</span>
+                        <span style={styles.serviceTag}>Priority: ${flight.optionalServices.priorityBoarding.price}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+        }
+
+        const styles = {
+          container: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            maxWidth: '900px',
+            margin: '0 auto',
+            padding: '12px',
+            minHeight: '100vh',
+            fontSize: '13px',
+          },
+          inputGroup: {
+            display: 'flex',
+            gap: '6px',
+            marginBottom: '12px',
+          },
+          input: {
+            flex: '1',
+            padding: '6px 10px',
+            fontSize: '13px',
+            border: '1px solid #ddd',
+            borderRadius: '3px',
+            outline: 'none',
+          },
+          button: {
+            padding: '6px 16px',
+            fontSize: '13px',
+            backgroundColor: 'black',
+            color: 'white',
+            border: 'none',
+            borderRadius: '3px',
+            cursor: 'pointer',
+            fontWeight: '500',
+          },
+          error: {
+            backgroundColor: '#fee',
+            color: '#c00',
+            padding: '8px 10px',
+            borderRadius: '3px',
+            marginBottom: '12px',
+            fontSize: '12px',
+            border: '1px solid #fcc',
+          },
+          loading: {
+            textAlign: 'center',
+            padding: '20px',
+            fontSize: '13px',
+            color: '#666',
+          },
+          flightsContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          },
+          flightCard: {
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            padding: '10px 12px',
+            border: '1px solid #e0e0e0',
+          },
+          mainRow: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginBottom: '8px',
+          },
+          routeSection: {
+            minWidth: '180px',
+          },
+          route: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '2px',
+          },
+          airportCode: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+            color: '#000',
+            letterSpacing: '0.5px',
+          },
+          arrow: {
+            color: '#0066cc',
+            fontSize: '14px',
+          },
+          cities: {
+            fontSize: '11px',
+            color: '#666',
+          },
+          timeSection: {
+            flex: 1,
+          },
+          timeRow: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '2px',
+          },
+          time: {
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#000',
+            width: '60px',
+          },
+          duration: {
+            fontSize: '12px',
+            color: '#666',
+            textAlign: 'center',
+          },
+          dateRow: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          },
+          date: {
+            fontSize: '11px',
+            color: '#888',
+            width: '60px',
+          },
+          stops: {
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+          },
+          priceSection: {
+            textAlign: 'right',
+            minWidth: '80px',
+          },
+          totalFare: {
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: '#0066cc',
+            lineHeight: '1.2',
+          },
+          fareType: {
+            fontSize: '11px',
+            color: '#666',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+          },
+          detailsRow: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '6px 0',
+            borderTop: '1px solid #f0f0f0',
+            borderBottom: '1px solid #f0f0f0',
+            marginBottom: '6px',
+          },
+          detailGroup: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '11px',
+          },
+          detailLabel: {
+            color: '#888',
+            fontWeight: '500',
+          },
+          detailValue: {
+            color: '#333',
+          },
+          detailSeparator: {
+            color: '#ccc',
+          },
+          servicesRow: {
+            display: 'flex',
+            gap: '6px',
+            flexWrap: 'wrap',
+          },
+          serviceTag: {
+            fontSize: '11px',
+            padding: '3px 8px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '3px',
+            color: '#555',
+            whiteSpace: 'nowrap',
+          },
+        };
+
+        ReactDOM.render(<FlightsApp />, document.getElementById('root'));
+      </script>
+
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      </style>
+    </body>
+    </html>
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights?origin={{origin}}"
+  params:
+    - name: origin
+      value: "{{origin}}"
+      type: query
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Flights - Filter by Origin
+  
+  Retrieves a list of flights filtered by the origin airport code.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `origin` | string | **Required.** Origin airport code (e.g., JFK, LAX, SFB) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Airport Codes
+  
+  SFB (Orlando), LAS (Las Vegas), LAX (Los Angeles), JFK (New York), ORD (Chicago), DFW (Dallas), DEN (Denver), ATL (Atlanta), SEA (Seattle), MIA (Miami), PHX (Phoenix), IAH (Houston), BOS (Boston), SFO (San Francisco), MSP (Minneapolis), DTW (Detroit), PHL (Philadelphia), CLT (Charlotte), LGA (New York), BWI (Baltimore)
+  
+  ## Response
+  
+  Returns an array of flight objects. The `x-total-count` response header contains the total number of matching flights.
+  
+  ### Flight Object Structure
+  
+  ```json
+  {
+    "journey": {
+      "origin": { "airportCode": "JFK", "city": "New York", "name": "John F. Kennedy Intl" },
+      "destination": { "airportCode": "LAX", "city": "Los Angeles", "name": "Los Angeles Intl" },
+      "departureTimeLocal": "2026-01-25T14:30",
+      "arrivalTimeLocal": "2026-01-25T17:45",
+      "totalDurationMinutes": 315,
+      "durationMinutes": 315,
+      "stops": 0,
+      "aircraft": "Boeing 737",
+      "operatedBy": "United Airlines"
+    },
+    "pricing": {
+      "baseFare": 199.99,
+      "taxesAndFees": 89.50,
+      "totalFare": 289.49,
+      "fareType": "Standard",
+      "currency": "USD"
+    },
+    "optionalServices": {
+      "carryOnBag": { "price": 25, "per": "segment" },
+      "checkedBag": { "firstBag": 35, "secondBag": 45, "maxWeightLbs": 40 },
+      "seatSelection": { "standardSeat": 18, "legroomSeat": 42 },
+      "priorityBoarding": { "price": 15 }
+    }
+  }
+  ```
+  
+  ## Example
+  
+  `GET /flights?origin=JFK&page=1&per_page=10`
