@@ -13,21 +13,32 @@ Intended for trials, sales walkthroughs, prospect demos, and quick sanity checks
 ```bash
 git clone https://github.com/bruno-collections/bruno-cli-docker.git
 cd bruno-cli-docker
-docker compose run --rm bruno-cli
+docker compose run bruno-cli
 ```
 
-That's it. Docker pulls the [`usebruno/cli:3.3`](https://hub.docker.com/r/usebruno/cli) image, mounts the included collection, and runs the `posts` folder against the `Prod` environment. The CLI fires the bundled `posts` requests against [`mockdata.dev`](https://mockdata.dev) and prints a pass/fail summary at the end.
+That's it. Docker pulls the [`usebruno/cli:latest`](https://hub.docker.com/r/usebruno/cli) image, mounts the included collection, and runs the `posts` folder against the `Prod` environment. The CLI fires the bundled `posts` requests against [`mockdata.dev`](https://mockdata.dev) and prints a pass/fail summary at the end. JSON, JUnit XML, and HTML reports for the run land in [`reports/`](./reports) on your host (see [`reports/README.md`](./reports/README.md) for what each file is).
 
 > **Note on `-r`:** Bruno CLI's `run` is non-recursive by default — it only looks at the target folder's direct children. If your collection has nested subfolders (most do, including the bundled one here), add `-r` to recurse: `bru run my-folder -r --env ci`. The `docker-compose.yml` shipped in this repo already passes `-r`. Targeting a single `.bru` or `.yml` file doesn't need `-r`.
+
+> **Note on `--rm`:** Examples below omit `--rm`. Docker keeps stopped containers around after they exit, which lets you `docker logs` or `docker inspect` them later for debugging. If you'd rather have Docker auto-delete the container as soon as `bru` finishes — useful for CI runs or to avoid `docker ps -a` filling up with stale entries — append `--rm` to any `docker compose run` command:
+>
+> ```bash
+> docker compose run --rm bruno-cli
+> ```
+>
+> It's purely a cleanup convenience; it doesn't affect the image, mounts, stdout output, or exit code.
 
 ---
 
 ## What this demo does
 
-Out of the box, `docker compose run --rm bruno-cli` executes:
+Out of the box, `docker compose run bruno-cli` executes:
 
 ```
-bru run posts -r --env Prod
+bru run posts -r --env Prod \
+  --reporter-json /reports/results.json \
+  --reporter-junit /reports/results.xml \
+  --reporter-html /reports/results.html
 ```
 
 inside a container, against the included `collection/` directory. The `posts` folder is a small slice covering:
@@ -37,7 +48,7 @@ inside a container, against the included `collection/` directory. The `posts` fo
 - Read post comments
 - Look up post statuses, tags, categories
 
-All requests hit `https://mockdata.dev` — a free, public mock API service designed for development and testing. No accounts, no API keys, no setup required.
+All requests hit `https://mockdata.dev` — a free, public mock API service designed for development and testing. No accounts, no API keys, no setup required. After the run finishes, `reports/results.json`, `reports/results.xml`, and `reports/results.html` will be present on your host.
 
 ---
 
@@ -48,6 +59,9 @@ bruno-cli-docker/
 ├── README.md                    ← you are here
 ├── LICENSE                      ← MIT
 ├── docker-compose.yml           ← runs the demo
+├── reports/                     ← generated reports land here (gitignored)
+│   ├── README.md
+│   └── .gitignore
 └── collection/                  ← the Bruno collection itself
     ├── opencollection.yml       ← collection root marker (OpenCollection format)
     ├── readme.md                ← collection-specific docs
@@ -71,16 +85,16 @@ The collection uses Bruno's [OpenCollection](https://docs.usebruno.com) YAML for
 Override the default `posts` target by passing CLI arguments after the service name. They replace the compose file's `command:`. Use `-r` so `bru` recurses into the folder's subfolders:
 
 ```bash
-docker compose run --rm bruno-cli run billing -r --env Prod
-docker compose run --rm bruno-cli run flights -r --env Prod
-docker compose run --rm bruno-cli run hotels -r --env Prod
-docker compose run --rm bruno-cli run songs -r --env Prod
+docker compose run bruno-cli run billing -r --env Prod
+docker compose run bruno-cli run flights -r --env Prod
+docker compose run bruno-cli run hotels -r --env Prod
+docker compose run bruno-cli run songs -r --env Prod
 ```
 
 ### Run the entire collection
 
 ```bash
-docker compose run --rm bruno-cli run . -r --env Prod
+docker compose run bruno-cli run . -r --env Prod
 ```
 
 (Runs every request across all five domains.)
@@ -88,31 +102,38 @@ docker compose run --rm bruno-cli run . -r --env Prod
 ### Run a single request file
 
 ```bash
-docker compose run --rm bruno-cli run "posts/posts/Get All Posts.yml" --env Prod
+docker compose run bruno-cli run "posts/posts/Get All Posts.yml" --env Prod
 ```
 
 (`-r` is not needed when targeting a single file.)
 
-### Generate a JUnit XML or JSON report
+### Customize report formats
+
+The shipped `command:` in `docker-compose.yml` emits all three report formats (JSON, JUnit XML, HTML) into `/reports` on every run. To change that, override the command on the CLI and pass only the `--reporter-*` flags you want. Note that an override replaces the entire `command:` from the compose file, so re-state any flags you still need:
 
 ```bash
-# JUnit XML — for CI test reporters
-docker compose run --rm bruno-cli run posts -r --env Prod --output results.xml --format junit
+# JUnit XML only — useful when piping to CI test reporters
+docker compose run bruno-cli run posts -r --env Prod \
+  --reporter-junit /reports/results.xml
 
-# JSON
-docker compose run --rm bruno-cli run posts -r --env Prod --output results.json --format json
+# JSON only
+docker compose run bruno-cli run posts -r --env Prod \
+  --reporter-json /reports/results.json
+
+# Skip reports entirely — just the stdout summary
+docker compose run bruno-cli run posts -r --env Prod
 ```
 
-The report file lands in `collection/` on your host because the collection directory is bind-mounted.
+All `/reports/*` paths land in `reports/` on your host because of the `./reports:/reports` bind mount in the compose file.
 
 ### Pin a different image version
 
-Edit `docker-compose.yml` and change `image: usebruno/cli:3.3` to whatever you need:
+Edit `docker-compose.yml` and change `image: usebruno/cli:latest` to whatever you need:
 
 ```yaml
 image: usebruno/cli:3.3.0        # exact version, immutable
 image: usebruno/cli:3            # any 3.x.x, floats
-image: usebruno/cli:latest       # newest stable
+image: usebruno/cli:3.3          # any 3.3.x, floats
 image: usebruno/cli:3.3-debian   # debian variant (use for SSL / native-module compatibility)
 ```
 
@@ -124,12 +145,6 @@ The `collection/` directory is just bind-mounted — replace its contents with y
 
 ---
 
-## Why `--rm`?
-
-The `--rm` flag in `docker compose run --rm bruno-cli` deletes the throwaway container after `bru` finishes. The image, the collection, the report file (if any), and the stdout you just saw all stick around — only the empty container shell is cleaned up. Without `--rm`, repeated runs accumulate stopped containers that show up in `docker ps -a` and require manual `docker container prune` to clean up. For one-shot CLI runs this is the documented Docker pattern.
-
----
-
 ## Where the image comes from
 
 - **Docker Hub:** [`usebruno/cli`](https://hub.docker.com/r/usebruno/cli)
@@ -137,7 +152,7 @@ The `--rm` flag in `docker compose run --rm bruno-cli` deletes the throwaway con
 - **Source Dockerfiles + smoke tests:** [`usebruno/bruno`](https://github.com/usebruno/bruno/tree/main/packages/bruno-cli/docker)
 - **CLI documentation:** [docs.usebruno.com/bru-cli](https://docs.usebruno.com/bru-cli/overview)
 
-To pull from GHCR instead of Docker Hub, change `docker-compose.yml`'s `image:` to `ghcr.io/usebruno/cli:3.3`. Same image, mirrored.
+To pull from GHCR instead of Docker Hub, change `docker-compose.yml`'s `image:` to `ghcr.io/usebruno/cli:latest`. Same image, mirrored.
 
 ---
 
