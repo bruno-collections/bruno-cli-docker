@@ -1,0 +1,54 @@
+info:
+  name: Get Hotels - Filter by City and Dates
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?city=LAS&check_in=2026-01-25&check_out=2026-01-28"
+  params:
+    - name: city
+      value: LAS
+      type: query
+    - name: check_in
+      value: 2026-01-25
+      type: query
+    - name: check_out
+      value: 2026-01-28
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Filter by City and Dates
+  
+  Retrieves hotels for a specific city and date range.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `city` | string | **Required.** City code (e.g., LAS, NYC) |
+  | `check_in` | string | **Required.** Check-in date (`yyyy-mm-dd`) |
+  | `check_out` | string | **Required.** Check-out date (`yyyy-mm-dd`) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - City code matching is case-insensitive (converted to uppercase)
+  - Check-in and check-out dates must match exactly
+  - All filters are combined with AND logic
+  
+  ## Response
+  
+  Returns an array of hotels matching the city and dates. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels?city=LAS&check_in=2026-01-25&check_out=2026-01-28`

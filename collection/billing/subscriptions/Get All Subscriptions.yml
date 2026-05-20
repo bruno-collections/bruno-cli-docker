@@ -1,0 +1,68 @@
+info:
+  name: Get All Subscriptions
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/subscriptions"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Subscriptions
+  
+  Retrieves all subscriptions with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of subscription objects. The `x-total-count` header contains total subscriptions.
+  
+  ### Subscription Object Structure
+  
+  ```json
+  {
+    "id": "sub_ABC123xyz",
+    "customer": "cus_ABC123xyz",
+    "status": "active",
+    "plan": "Pro",
+    "amount": 2999,
+    "currency": "USD",
+    "current_period_start": 1704067200,
+    "current_period_end": 1706745600,
+    "cancel_at_period_end": false,
+    "created": 1704067200
+  }
+  ```
+  
+  **Note:** Amounts are in cents per month (e.g., 2999 = $29.99/month). Dates are Unix timestamps (seconds).
+  
+  ### Subscription Statuses
+  
+  - `active` - Active subscription (70% of subscriptions)
+  - `trialing` - Trial period
+  - `past_due` - Past due payment
+  - `canceled` - Canceled subscription
+  - `incomplete` - Incomplete setup
+  
+  ### Plans
+  
+  - `Basic` - $9.99/month (999 cents)
+  - `Pro` - $29.99/month (2999 cents)
+  - `Enterprise` - $99.99/month (9999 cents)
+  
+  ## Example
+  
+  `GET /billing/subscriptions`

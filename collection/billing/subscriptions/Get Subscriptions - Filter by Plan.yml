@@ -1,0 +1,48 @@
+info:
+  name: Get Subscriptions - Filter by Plan
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/subscriptions?plan=Pro"
+  params:
+    - name: plan
+      value: Pro
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Subscriptions - Filter by Plan
+  
+  Retrieves subscriptions filtered by plan type.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `plan` | string | **Required.** Plan name (`Basic`, `Pro`, or `Enterprise`) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available Plans
+  
+  | Plan | Monthly Price |
+  |------|---------------|
+  | Basic | $9.99 (999 cents) |
+  | Pro | $29.99 (2999 cents) |
+  | Enterprise | $99.99 (9999 cents) |
+  
+  ## Response
+  
+  Returns an array of subscriptions for the specified plan. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/subscriptions?plan=Pro`

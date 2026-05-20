@@ -1,0 +1,70 @@
+info:
+  name: Get All Payments
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/payments"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Payments
+  
+  Retrieves all payments with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of payment objects. The `x-total-count` header contains total payments.
+  
+  ### Payment Object Structure
+  
+  ```json
+  {
+    "id": "pay_ABC123xyz",
+    "customer": "cus_ABC123xyz",
+    "subscription": "sub_ABC123xyz",
+    "invoice": "inv_ABC123xyz",
+    "amount": 2999,
+    "currency": "USD",
+    "status": "succeeded",
+    "payment_method": "card",
+    "description": "Monthly subscription",
+    "created": 1704067200,
+    "paid_at": 1704067200
+  }
+  ```
+  
+  **Note:** Amounts are in cents (e.g., 2999 = $29.99). Dates are Unix timestamps (seconds).
+  
+  ### Payment Statuses
+  
+  - `succeeded` - Payment succeeded (85% of payments)
+  - `pending` - Payment pending
+  - `failed` - Payment failed
+  - `refunded` - Payment refunded
+  
+  ### Payment Methods
+  
+  - `card` - Credit/debit card
+  - `bank_transfer` - Bank transfer
+  - `paypal` - PayPal
+  - `apple_pay` - Apple Pay
+  - `google_pay` - Google Pay
+  
+  ## Example
+  
+  `GET /billing/payments`

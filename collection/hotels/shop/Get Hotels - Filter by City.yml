@@ -1,0 +1,44 @@
+info:
+  name: Get Hotels - Filter by City
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels?city=ORL"
+  params:
+    - name: city
+      value: ORL
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Hotels - Filter by City
+  
+  Retrieves hotels filtered by city code.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `city` | string | **Required.** City code (e.g., ORL, LAS, NYC) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Available City Codes (20 total)
+  
+  ORL (Orlando), LAS (Las Vegas), LAX (Los Angeles), NYC (New York), CHI (Chicago), DFW (Dallas), DEN (Denver), ATL (Atlanta), SEA (Seattle), MIA (Miami), PHX (Phoenix), HOU (Houston), BOS (Boston), SFO (San Francisco), MSP (Minneapolis), DET (Detroit), PHL (Philadelphia), CLT (Charlotte), BAL (Baltimore), NOL (New Orleans)
+  
+  ## Response
+  
+  Returns an array of hotels in the specified city. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /hotels?city=ORL`

@@ -1,0 +1,97 @@
+info:
+  name: Get All Posts
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body
+      operator: isArray
+      value: ""
+    - expression: res.body.length
+      operator: gte
+      value: "1"
+  scripts:
+    - type: tests
+      code: |
+        test("response is a non-empty array of posts", function() {
+          const body = res.getBody();
+          expect(Array.isArray(body)).to.equal(true);
+          expect(body.length).to.be.greaterThan(0);
+        });
+        test("each post has required fields", function() {
+          const body = res.getBody();
+          const first = body[0];
+          expect(first).to.have.property("id");
+          expect(first).to.have.property("title");
+          expect(first).to.have.property("author");
+          expect(first).to.have.property("status");
+        });
+        test("response time is under 5 seconds", function() {
+          expect(res.getResponseTime()).to.be.below(5000);
+        });
+
+docs: |
+  # Get All Posts
+  
+  Retrieves all blog posts with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of post objects. The `x-total-count` header contains total posts.
+  
+  ### Post Object Structure
+  
+  ```json
+  {
+    "id": "post_0001",
+    "title": "Getting Started with React",
+    "slug": "getting-started-with-react",
+    "body": "Post content...",
+    "excerpt": "Brief excerpt...",
+    "author": "author_001",
+    "authorName": "John Smith",
+    "category": "Programming",
+    "tags": ["javascript", "react"],
+    "status": "published",
+    "publishedAt": "2024-01-15T10:30:00.000Z",
+    "createdAt": "2024-01-15T09:00:00.000Z",
+    "updatedAt": "2024-01-20T14:20:00.000Z",
+    "views": 1250,
+    "likes": 45,
+    "readingTime": 5,
+    "featuredImage": "https://picsum.photos/800/400?random=1"
+  }
+  ```
+  
+  ### Post Statuses
+  
+  - `published` - Published post (75% of posts)
+  - `draft` - Draft post
+  - `archived` - Archived post
+  - `scheduled` - Scheduled for future publication
+  
+  ## Example
+  
+  `GET /posts`

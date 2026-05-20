@@ -1,0 +1,62 @@
+info:
+  name: Get Subscriptions - Combined Filters
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/subscriptions?status=active&plan=Pro&created[gte]=2024-01-01&page=1&per_page=20"
+  params:
+    - name: status
+      value: active
+      type: query
+    - name: plan
+      value: Pro
+      type: query
+    - name: created[gte]
+      value: 2024-01-01
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Subscriptions - Combined Filters
+  
+  Retrieves subscriptions using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `customer` | string | Filter by customer ID |
+  | `status` | string | Filter by subscription status |
+  | `plan` | string | Filter by plan name |
+  | `created[gte]` | string | Filter by creation date (greater than or equal, ISO 8601) |
+  | `created[lte]` | string | Filter by creation date (less than or equal, ISO 8601) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Status matching is case-insensitive
+  - Plan matching is exact (case-sensitive)
+  
+  ## Response
+  
+  Returns an array of subscriptions matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/subscriptions?status=active&plan=Pro&created[gte]=2024-01-01&page=1&per_page=20`

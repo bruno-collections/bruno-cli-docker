@@ -1,0 +1,32 @@
+info:
+  name: Get Genres
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs/lookups/genres"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Genres
+  
+  Retrieves the list of music genres.
+  
+  ## Response
+  
+  Returns an array of genre names (strings).
+  
+  ### Available Genres (16 total)
+  
+  Pop, Rock, Hip-Hop, R&B, Country, Electronic, Jazz, Classical, Blues, Reggae, Folk, Metal, Punk, Indie, Latin, World
+  
+  ## Example
+  
+  `GET /songs/lookups/genres`

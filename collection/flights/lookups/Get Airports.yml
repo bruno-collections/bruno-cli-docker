@@ -1,0 +1,198 @@
+info:
+  name: Get Airports
+  type: http
+  seq: 1
+
+app:
+  code: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Airport Lookup</title>
+        <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script type="text/babel">
+            const { useState, useEffect } = React;
+
+            function AirportTable() {
+                const [airports, setAirports] = useState([]);
+                const [loading, setLoading] = useState(true);
+                const [error, setError] = useState(null);
+
+                useEffect(() => {
+                    fetchAirports();
+                }, []);
+
+                const fetchAirports = async () => {
+                    try {
+                        setLoading(true);
+                        setError(null);
+                        const response = await ctx.sendRequest();
+                        setAirports(response.data || []);
+                    } catch (err) {
+                        setError(err.message || 'Failed to fetch airports');
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                if (loading) {
+                    return (
+                        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                            <div className="text-center">
+                                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                <p className="mt-4 text-gray-600">Loading airports...</p>
+                            </div>
+                        </div>
+                    );
+                }
+
+                if (error) {
+                    return (
+                        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+                                <h3 className="text-red-800 font-semibold mb-2">Error</h3>
+                                <p className="text-red-600">{error}</p>
+                                <button 
+                                    onClick={fetchAirports}
+                                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="min-h-screen bg-white p-4">
+                        <div className="max-w-6xl mx-auto">
+                            <div className="bg-white rounded-lg shadow overflow-hidden">
+                                <div className="bg-gray-800 px-4 py-3">
+                                    <h1 className="text-lg font-bold text-white">Airport Lookup</h1>
+                                    <p className="text-gray-300 text-xs mt-1">{airports.length} airports available</p>
+                                </div>
+                                
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-[13px]">
+                                        <thead className="bg-gray-100 border-b border-gray-300">
+                                            <tr>
+                                                <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Code
+                                                </th>
+                                                <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    City
+                                                </th>
+                                                <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                    Airport Name
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {airports.map((airport, index) => (
+                                                <tr 
+                                                    key={airport.code}
+                                                    className="hover:bg-gray-50 transition-colors duration-100"
+                                                >
+                                                    <td className="px-3 py-2 whitespace-nowrap">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-gray-200 text-gray-800">
+                                                            {airport.code}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-3 py-2 whitespace-nowrap">
+                                                        <div className="font-medium text-gray-900">{airport.city}</div>
+                                                    </td>
+                                                    <td className="px-3 py-2">
+                                                        <div className="text-gray-900">{airport.name}</div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
+                                    <button 
+                                        onClick={fetchAirports}
+                                        className="px-3 py-1.5 text-[13px] bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors duration-150 font-medium"
+                                    >
+                                        Refresh Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            ReactDOM.createRoot(document.getElementById('root')).render(<AirportTable />);
+        </script>
+    </body>
+    </html>
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/lookups/airports"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Airports
+  
+  Retrieves the list of all supported airports.
+  
+  ## Response
+  
+  Returns an array of airport objects.
+  
+  ### Airport Object
+  
+  ```json
+  {
+    "code": "JFK",
+    "city": "New York",
+    "name": "John F. Kennedy Intl"
+  }
+  ```
+  
+  ### Available Airports (20 total)
+  
+  | Code | City | Name |
+  |------|------|------|
+  | SFB | Orlando | Orlando Sanford Intl |
+  | LAS | Las Vegas | Harry Reid Intl |
+  | LAX | Los Angeles | Los Angeles Intl |
+  | JFK | New York | John F. Kennedy Intl |
+  | ORD | Chicago | O'Hare Intl |
+  | DFW | Dallas | Dallas/Fort Worth Intl |
+  | DEN | Denver | Denver Intl |
+  | ATL | Atlanta | Hartsfield-Jackson Atlanta Intl |
+  | SEA | Seattle | Seattle-Tacoma Intl |
+  | MIA | Miami | Miami Intl |
+  | PHX | Phoenix | Phoenix Sky Harbor Intl |
+  | IAH | Houston | George Bush Intercontinental |
+  | BOS | Boston | Logan Intl |
+  | SFO | San Francisco | San Francisco Intl |
+  | MSP | Minneapolis | Minneapolis-St. Paul Intl |
+  | DTW | Detroit | Detroit Metro |
+  | PHL | Philadelphia | Philadelphia Intl |
+  | CLT | Charlotte | Charlotte Douglas Intl |
+  | LGA | New York | LaGuardia |
+  | BWI | Baltimore | Baltimore/Washington Intl |
+  
+  ## Example
+  
+  `GET /flights/lookups/airports`

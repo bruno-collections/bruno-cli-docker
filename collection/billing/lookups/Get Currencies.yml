@@ -1,0 +1,37 @@
+info:
+  name: Get Currencies
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/lookups/currencies"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Currencies
+  
+  Retrieves the list of supported currencies.
+  
+  ## Response
+  
+  Returns an array of currency codes (strings).
+  
+  ### Available Currencies (6 total)
+  
+  - USD (US Dollar)
+  - EUR (Euro)
+  - GBP (British Pound)
+  - JPY (Japanese Yen)
+  - CAD (Canadian Dollar)
+  - AUD (Australian Dollar)
+  
+  ## Example
+  
+  `GET /billing/lookups/currencies`

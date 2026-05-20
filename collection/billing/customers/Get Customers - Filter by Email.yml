@@ -1,0 +1,45 @@
+info:
+  name: Get Customers - Filter by Email
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/customers?email=john.smith@example.com"
+  params:
+    - name: email
+      value: john.smith@example.com
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Customers - Filter by Email
+  
+  Retrieves customers filtered by exact email address match.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `email` | string | **Required.** Exact email address (case-insensitive) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - Email matching is case-insensitive
+  - Returns customers with exact email match
+  
+  ## Response
+  
+  Returns an array of customers matching the email. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/customers?email=john.smith@example.com`

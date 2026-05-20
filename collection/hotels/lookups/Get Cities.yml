@@ -1,0 +1,43 @@
+info:
+  name: Get Cities
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/hotels/lookups/cities"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Cities
+  
+  Retrieves the list of available cities for hotel bookings.
+  
+  ## Response
+  
+  Returns an array of city objects.
+  
+  ### City Object
+  
+  ```json
+  {
+    "code": "NYC",
+    "name": "New York",
+    "state": "NY",
+    "country": "USA"
+  }
+  ```
+  
+  ### Available Cities (20 total)
+  
+  ORL (Orlando, FL), LAS (Las Vegas, NV), LAX (Los Angeles, CA), NYC (New York, NY), CHI (Chicago, IL), DFW (Dallas, TX), DEN (Denver, CO), ATL (Atlanta, GA), SEA (Seattle, WA), MIA (Miami, FL), PHX (Phoenix, AZ), HOU (Houston, TX), BOS (Boston, MA), SFO (San Francisco, CA), MSP (Minneapolis, MN), DET (Detroit, MI), PHL (Philadelphia, PA), CLT (Charlotte, NC), BAL (Baltimore, MD), NOL (New Orleans, LA)
+  
+  ## Example
+  
+  `GET /hotels/lookups/cities`

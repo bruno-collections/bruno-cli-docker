@@ -1,0 +1,51 @@
+info:
+  name: Get Payments - Filter by Amount Range
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/payments?min_amount=1000&max_amount=10000"
+  params:
+    - name: min_amount
+      value: "1000"
+      type: query
+    - name: max_amount
+      value: "10000"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Payments - Filter by Amount Range
+  
+  Retrieves payments within a specified amount range.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `min_amount` | integer | Minimum amount in cents (e.g., 1000 = $10.00) |
+  | `max_amount` | integer | Maximum amount in cents (e.g., 10000 = $100.00) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - Amounts are specified in cents
+  - `min_amount`: Returns payments with amount >= this value
+  - `max_amount`: Returns payments with amount <= this value
+  - Payment amounts range from $5.00 (500 cents) to $500.00 (50000 cents)
+  
+  ## Response
+  
+  Returns an array of payments within the amount range. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/payments?min_amount=1000&max_amount=10000`

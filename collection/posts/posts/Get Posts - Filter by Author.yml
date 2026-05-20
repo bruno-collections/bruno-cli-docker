@@ -1,0 +1,62 @@
+info:
+  name: Get Posts - Filter by Author
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts?author=author_001"
+  params:
+    - name: author
+      value: author_001
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body
+      operator: isArray
+      value: ""
+  scripts:
+    - type: tests
+      code: |
+        test("every returned post belongs to the requested author", function() {
+          const body = res.getBody();
+          expect(Array.isArray(body)).to.equal(true);
+          body.forEach(function(post) {
+            expect(post.author).to.equal("author_001");
+          });
+        });
+        test("response time is under 5 seconds", function() {
+          expect(res.getResponseTime()).to.be.below(5000);
+        });
+
+docs: |
+  # Get Posts - Filter by Author
+  
+  Retrieves posts filtered by author ID.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `author` | string | **Required.** Author ID (e.g., `author_001`) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of posts by the specified author. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /posts?author=author_001`

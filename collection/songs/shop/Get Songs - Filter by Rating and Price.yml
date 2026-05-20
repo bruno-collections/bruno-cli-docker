@@ -1,0 +1,51 @@
+info:
+  name: Get Songs - Filter by Rating and Price
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs?min_rating=4.0&max_price=1.50"
+  params:
+    - name: min_rating
+      value: "4.0"
+      type: query
+    - name: max_price
+      value: "1.50"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Songs - Filter by Rating and Price
+  
+  Retrieves songs filtered by rating and price range.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `min_rating` | number | Minimum rating (0-5, e.g., 4.0) |
+  | `max_price` | number | Maximum price in USD (e.g., 1.50) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - `min_rating`: Returns songs with `metadata.rating >= min_rating`
+  - `max_price`: Returns songs with `pricing.songPrice <= max_price`
+  - Song prices range from $0.99 to $1.99
+  - Ratings range from 3.0 to 5.0
+  
+  ## Response
+  
+  Returns an array of songs within the rating and price range. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /songs?min_rating=4.0&max_price=1.50`

@@ -1,0 +1,61 @@
+info:
+  name: Get All Comments
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/comments"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Comments
+  
+  Retrieves all comments with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of comment objects. The `x-total-count` header contains total comments.
+  
+  ### Comment Object Structure
+  
+  ```json
+  {
+    "id": "comment_00001",
+    "post": "post_0001",
+    "author": "author_001",
+    "authorName": "John Smith",
+    "authorEmail": "john.smith@example.com",
+    "body": "Great article!",
+    "status": "approved",
+    "parent": null,
+    "createdAt": "2024-01-20T14:30:00.000Z",
+    "likes": 5
+  }
+  ```
+  
+  **Note:** Comments can be replies (have a `parent` comment ID) or top-level comments (`parent` is null).
+  
+  ### Comment Statuses
+  
+  - `approved` - Approved comment (80% of comments)
+  - `pending` - Pending moderation
+  - `spam` - Marked as spam
+  - `deleted` - Deleted comment
+  
+  ## Example
+  
+  `GET /posts/comments`

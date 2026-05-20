@@ -1,0 +1,58 @@
+info:
+  name: Get All Customers
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/customers"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Customers
+  
+  Retrieves all customers with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of customer objects. The `x-total-count` header contains total customers.
+  
+  ### Customer Object Structure
+  
+  ```json
+  {
+    "id": "cus_ABC123xyz",
+    "email": "john.smith@example.com",
+    "name": "John Smith",
+    "phone": "+12025551234",
+    "status": "active",
+    "created": 1704067200,
+    "metadata": {
+      "source": "website",
+      "signup_date": "2024-01-01"
+    }
+  }
+  ```
+  
+  ### Customer Statuses
+  
+  - `active` - Active customer (80% of customers)
+  - `inactive` - Inactive customer
+  - `deleted` - Deleted customer
+  
+  ## Example
+  
+  `GET /billing/customers`

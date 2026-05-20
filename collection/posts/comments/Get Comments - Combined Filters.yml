@@ -1,0 +1,62 @@
+info:
+  name: Get Comments - Combined Filters
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/comments?post=post_0001&status=approved&created[gte]=2024-01-01&page=1&per_page=20"
+  params:
+    - name: post
+      value: post_0001
+      type: query
+    - name: status
+      value: approved
+      type: query
+    - name: created[gte]
+      value: 2024-01-01
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Comments - Combined Filters
+  
+  Retrieves comments using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `post` | string | Filter by post ID |
+  | `author` | string | Filter by author ID |
+  | `status` | string | Filter by comment status |
+  | `created[gte]` | string | Filter by creation date (greater than or equal, ISO 8601) |
+  | `created[lte]` | string | Filter by creation date (less than or equal, ISO 8601) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Status matching is case-insensitive
+  - Comments are created up to 90 days after post publication
+  
+  ## Response
+  
+  Returns an array of comments matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /posts/comments?post=post_0001&status=approved&created[gte]=2024-01-01&page=1&per_page=20`

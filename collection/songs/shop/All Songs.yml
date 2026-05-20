@@ -1,0 +1,64 @@
+info:
+  name: All Songs
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # All Songs
+  
+  Retrieves all available songs with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of song objects. The `x-total-count` header contains total songs.
+  
+  ### Song Object Structure
+  
+  ```json
+  {
+    "song": {
+      "title": "Love Heart",
+      "artist": "Taylor Swift",
+      "album": "Midnight Dreams",
+      "genre": "Pop",
+      "duration": "3:45",
+      "durationSeconds": 225,
+      "trackNumber": 1,
+      "releaseDate": "2023-05-15",
+      "recordLabel": "Universal Music",
+      "format": "Digital"
+    },
+    "pricing": {
+      "songPrice": 1.29,
+      "albumPrice": 12.99,
+      "currency": "USD"
+    },
+    "metadata": {
+      "rating": 4.5,
+      "playCount": 1250000,
+      "isExplicit": false
+    }
+  }
+  ```
+  
+  ## Example
+  
+  `GET /songs`

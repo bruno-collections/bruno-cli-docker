@@ -1,0 +1,63 @@
+info:
+  name: Get All Invoices
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/invoices"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Invoices
+  
+  Retrieves all invoices with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of invoice objects. The `x-total-count` header contains total invoices.
+  
+  ### Invoice Object Structure
+  
+  ```json
+  {
+    "id": "inv_ABC123xyz",
+    "customer": "cus_ABC123xyz",
+    "subscription": "sub_ABC123xyz",
+    "amount_due": 2999,
+    "amount_paid": 2999,
+    "currency": "USD",
+    "status": "paid",
+    "due_date": 1704153600,
+    "paid_at": 1704067200,
+    "created": 1704067200,
+    "invoice_number": "INV-2024-000001"
+  }
+  ```
+  
+  **Note:** Amounts are in cents (e.g., 2999 = $29.99). Dates are Unix timestamps (seconds).
+  
+  ### Invoice Statuses
+  
+  - `draft` - Draft invoice
+  - `open` - Open/unpaid invoice
+  - `paid` - Paid invoice (50% of invoices)
+  - `void` - Voided invoice
+  - `uncollectible` - Uncollectible invoice
+  
+  ## Example
+  
+  `GET /billing/invoices`

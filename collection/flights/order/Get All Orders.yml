@@ -1,0 +1,66 @@
+info:
+  name: Get All Orders
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/flights/orders"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get All Orders
+  
+  Retrieves all flight orders with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of order objects. The `x-total-count` header contains total orders.
+  
+  ### Order Object Structure
+  
+  ```json
+  {
+    "orderNumber": "ABC1234",
+    "status": "confirmed",
+    "flight": {
+      "origin": { "airportCode": "JFK", "city": "New York", "name": "John F. Kennedy Intl" },
+      "destination": { "airportCode": "LAX", "city": "Los Angeles", "name": "Los Angeles Intl" },
+      "departureTimeLocal": "2026-01-25T14:30",
+      "arrivalTimeLocal": "2026-01-25T17:45",
+      "flightNumber": "UA1234",
+      "aircraft": "Boeing 737",
+      "operatedBy": "United Airlines"
+    },
+    "passengers": [
+      { "firstName": "John", "lastName": "Smith", "email": "john.smith@example.com", "seatNumber": "12A" }
+    ],
+    "fare": { "baseFare": 199.99, "taxesAndFees": 89.50, "totalFare": 289.49, "currency": "USD" },
+    "optionalServices": { "carryOnBag": true, "checkedBags": 1, "seatSelection": "standard", "priorityBoarding": false },
+    "createdAt": "2026-01-10T09:30:00.000Z",
+    "updatedAt": "2026-01-10T09:30:00.000Z"
+  }
+  ```
+  
+  ### Order Statuses
+  
+  - `confirmed` - Order is confirmed
+  - `pending` - Order is awaiting confirmation
+  - `cancelled` - Order has been cancelled
+  
+  ## Example
+  
+  `GET /flights/orders`

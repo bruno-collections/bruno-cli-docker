@@ -1,0 +1,69 @@
+info:
+  name: Get Payments - Combined Filters
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/billing/payments?customer=cus_ABC123&status=succeeded&payment_method=card&created[gte]=2024-01-01&page=1&per_page=20"
+  params:
+    - name: customer
+      value: cus_ABC123
+      type: query
+    - name: status
+      value: succeeded
+      type: query
+    - name: payment_method
+      value: card
+      type: query
+    - name: created[gte]
+      value: 2024-01-01
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Payments - Combined Filters
+  
+  Retrieves payments using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `customer` | string | Filter by customer ID |
+  | `subscription` | string | Filter by subscription ID |
+  | `invoice` | string | Filter by invoice ID |
+  | `status` | string | Filter by payment status |
+  | `payment_method` | string | Filter by payment method |
+  | `created[gte]` | string | Filter by creation date (greater than or equal, ISO 8601) |
+  | `created[lte]` | string | Filter by creation date (less than or equal, ISO 8601) |
+  | `min_amount` | integer | Minimum amount in cents |
+  | `max_amount` | integer | Maximum amount in cents |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Status and payment_method matching is case-insensitive
+  - Amount filters compare against `amount` field (in cents)
+  
+  ## Response
+  
+  Returns an array of payments matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /billing/payments?customer=cus_ABC123&status=succeeded&payment_method=card&created[gte]=2024-01-01&page=1&per_page=20`

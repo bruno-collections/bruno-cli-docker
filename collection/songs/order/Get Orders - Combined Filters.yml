@@ -1,0 +1,61 @@
+info:
+  name: Get Orders - Combined Filters
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{baseUrl}}/songs/orders?artist=Drake&genre=Hip-Hop&purchase_type=song&page=1&per_page=20"
+  params:
+    - name: artist
+      value: Drake
+      type: query
+    - name: genre
+      value: Hip-Hop
+      type: query
+    - name: purchase_type
+      value: song
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  # Get Orders - Combined Filters
+  
+  Retrieves song orders using multiple filters simultaneously.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `artist` | string | Filter by artist name |
+  | `genre` | string | Filter by genre |
+  | `order_number` | string | Filter by specific order number |
+  | `purchase_type` | string | Filter by purchase type (`song` or `album`) |
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Filter Behavior
+  
+  - All filters are combined with AND logic
+  - Artist and genre matching is case-insensitive
+  - Purchase type matching is case-insensitive
+  
+  ## Response
+  
+  Returns an array of orders matching all criteria. The `x-total-count` header shows total matches.
+  
+  ## Example
+  
+  `GET /songs/orders?artist=Drake&genre=Hip-Hop&purchase_type=song&page=1&per_page=20`

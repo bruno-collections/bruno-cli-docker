@@ -1,0 +1,75 @@
+info:
+  name: Get All Authors
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/posts/authors"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body
+      operator: isArray
+      value: ""
+    - expression: res.body.length
+      operator: gte
+      value: "1"
+  scripts:
+    - type: tests
+      code: |
+        test("each author has id, name, and email", function() {
+          const body = res.getBody();
+          expect(Array.isArray(body)).to.equal(true);
+          body.forEach(function(author) {
+            expect(author).to.have.property("id");
+            expect(author).to.have.property("name");
+            expect(author).to.have.property("email");
+            expect(author.email).to.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
+          });
+        });
+
+docs: |
+  # Get All Authors
+  
+  Retrieves all blog authors with default pagination.
+  
+  ## Query Parameters
+  
+  | Parameter | Type | Description |
+  |-----------|------|-------------|
+  | `page` | integer | Page number (default: 1) |
+  | `per_page` | integer | Items per page (default: 10, max: 50) |
+  
+  ## Response
+  
+  Returns an array of author objects. The `x-total-count` header contains total authors (50 total).
+  
+  ### Author Object Structure
+  
+  ```json
+  {
+    "id": "author_001",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@example.com",
+    "bio": "Software engineer passionate about web development.",
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=SarahJohnson",
+    "website": "https://sarahjohnson.dev",
+    "postCount": 12,
+    "createdAt": "2023-05-15T10:00:00.000Z"
+  }
+  ```
+  
+  ## Example
+  
+  `GET /posts/authors`
